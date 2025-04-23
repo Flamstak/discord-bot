@@ -84,6 +84,26 @@ command_help = {
         "description": "Pokazuje, co bot potrafi, full wypas! ❓",
         "usage": f"{PREFIX}pomoc [komenda]",
         "example": f"{PREFIX}pomoc lub {PREFIX}pomoc ankieta"
+    },
+    "ping": {
+        "description": "Sprawdza, jak szybko bot odpowiada! 🏓",
+        "usage": f"{PREFIX}ping",
+        "example": f"{PREFIX}ping"
+    },
+    "serverinfo": {
+        "description": "Sprawdza info o serwerze! 📊",
+        "usage": f"{PREFIX}serverinfo",
+        "example": f"{PREFIX}serverinfo"
+    },
+    "avatar": {
+        "description": "Pokazuje Twój lub czyjś awatar! 🖼️",
+        "usage": f"{PREFIX}avatar [użytkownik]",
+        "example": f"{PREFIX}avatar @Janek"
+    },
+    "roll": {
+        "description": "Rzuć kością lub losuj liczbę! 🎲",
+        "usage": f"{PREFIX}roll [liczba lub kX lub zakres]",
+        "example": f"{PREFIX}roll k6 lub {PREFIX}roll 1-100"
     }
 }
 
@@ -229,6 +249,68 @@ async def losuj(ctx, *args):
             return
         result = random.choice(items)
         await ctx.send(f"🎲 Wylosowano: **{result}**!")
+
+# Komenda: !ping
+@bot.command()
+async def ping(ctx):
+    latency = round(bot.latency * 1000)
+    embed = discord.Embed(
+        title="Pong! 🏓",
+        description=f"Opóźnienie: **{latency}ms**",
+        color=discord.Color.green()
+    )
+    await ctx.send(embed=embed)
+
+# Komenda: !serverinfo
+@bot.command()
+async def serverinfo(ctx):
+    guild = ctx.guild
+    embed = discord.Embed(
+        title=f"Informacje o {guild.name} 📊",
+        color=discord.Color.blue()
+    )
+    embed.add_field(name="Właściciel", value=guild.owner.mention, inline=True)
+    embed.add_field(name="Utworzony", value=guild.created_at.strftime("%Y-%m-%d %H:%M:%S"), inline=True)
+    embed.add_field(name="Członkowie", value=guild.member_count, inline=True)
+    embed.add_field(name="Kanały", value=len(guild.text_channels) + len(guild.voice_channels), inline=True)
+    embed.add_field(name="Role", value=len(guild.roles) - 1, inline=True)  # -1 dla @everyone
+    if guild.icon:
+        embed.set_thumbnail(url=guild.icon.url)
+    embed.set_footer(text=f"ID: {guild.id}")
+    await ctx.send(embed=embed)
+
+# Komenda: !avatar
+@bot.command()
+async def avatar(ctx, member: discord.Member = None):
+    member = member or ctx.author
+    embed = discord.Embed(
+        title=f"Awatar {member.display_name}! 🖼️",
+        color=discord.Color.teal()
+    )
+    embed.set_image(url=member.avatar.url if member.avatar else member.default_avatar.url)
+    embed.set_footer(text=f"Żądanie od {ctx.author}")
+    await ctx.send(embed=embed)
+
+# Komenda: !roll
+@bot.command()
+async def roll(ctx, dice: str = "k6"):
+    try:
+        if dice.startswith("k"):
+            sides = int(dice[1:]) if dice[1:] else 6
+            if sides < 1:
+                raise ValueError
+            result = random.randint(1, sides)
+            await ctx.send(f"🎲 Rzut kością k{sides}: **{result}**!")
+        elif "-" in dice:
+            start, end = map(int, dice.split("-"))
+            if start >= end:
+                raise ValueError
+            result = random.randint(start, end)
+            await ctx.send(f"🎲 Losowanie z zakresu {start}-{end}: **{result}**!")
+        else:
+            await ctx.send("Podaj kość (np. k6, k20) lub zakres (np. 1-100)!")
+    except ValueError:
+        await ctx.send("Ups, coś nie tak! Użyj np. `k6` lub `1-100`.")
 
 # Uruchomienie bota z tokenem
 bot.run(os.getenv("api_key"))
