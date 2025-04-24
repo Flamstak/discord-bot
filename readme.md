@@ -1,3 +1,4 @@
+
 # Discord Bot 🤖
 
 Prosty i przyjazny użytkownikom bot Discord napisany w Pythonie przy użyciu biblioteki `discord.py`.
@@ -10,6 +11,8 @@ Prosty i przyjazny użytkownikom bot Discord napisany w Pythonie przy użyciu bi
 - ✅ Zabawa (np. kamień-papier-nożyce, losowanie)
 - ✅ Informacje o użytkownikach
 - ✅ Interaktywna pomoc
+- ✅ Losowanie z listy
+- ✅ Komenda ping do sprawdzenia opóźnienia
 
 ## 🚀 Wymagania
 
@@ -56,6 +59,10 @@ python bot.py
 | `!zaproszenie` | Link zaproszenia na serwer.          | `!zaproszenie`                      |
 | `!losuj`       | Losuje osobę lub element z listy.    | `!losuj pies kot`                   |
 | `!pomoc`       | Wyświetla pomoc dla komend.          | `!pomoc ankieta`                    |
+| `!ping`        | Sprawdza opóźnienie bota.            | `!ping`                             |
+| `!serverinfo`  | Informacje o serwerze.               | `!serverinfo`                       |
+| `!avatar`      | Pokazuje awatar użytkownika.        | `!avatar @Janek`                    |
+| `!roll`        | Rzuca kością lub losuje liczbę.     | `!roll k6`                          |
 
 ## 💬 Wsparcie
 
